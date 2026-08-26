@@ -1,0 +1,275 @@
+/**
+ * data-sols.js
+ * -------------------------------------------------------------
+ * Base de données des types de sols pour les 12 départements du Bénin,
+ * + calendrier cultural mensuel par zone climatique.
+ *
+ * ⚠️ Ce sont des données D'EXEMPLE (structure de démonstration,
+ * coordonnées centrées sur les chefs-lieux de département).
+ * Remplace le contenu par tes vraies données en gardant les mêmes
+ * noms de champs, pour que le reste du code continue de fonctionner.
+ *
+ * Champs de chaque entrée de SOLS :
+ * - departement   : nom du département (affiché et utilisé pour la recherche)
+ * - lat, lng       : coordonnées approximatives du centre (pour le mode GPS)
+ * - zone           : "sud" | "centre" | "nord" — zone agro-climatique,
+ *                     utilisée pour retrouver le calendrier cultural
+ *                     correspondant dans CALENDRIERS_PAR_ZONE
+ * - typeSol        : nom du type de sol
+ * - horizons       : couches du sol, de la surface vers la profondeur
+ * - ph             : fourchette de pH
+ * - fertilite      : "Faible" | "Moyenne" | "Élevée"
+ * - culturesAdaptees : cultures adaptées à ce sol (vue d'ensemble)
+ * - description    : phrase d'explication courte
+ *
+ * CALENDRIERS_PAR_ZONE : pour chaque zone, la liste des cultures
+ * pratiquées (semis, entretien ou récolte) mois par mois. Le Bénin a
+ * un régime pluviométrique bimodal au sud (deux saisons des pluies)
+ * et unimodal au centre/nord (une seule saison, plus longue au centre).
+ */
+
+const SOLS = [
+  {
+    departement: "Alibori",
+    lat: 11.13,
+    lng: 2.94,
+    zone: "nord",
+    typeSol: "Vertisol (sol argileux noir)",
+    horizons: [
+      { nom: "Argile noire", couleur: "#2B2118" },
+      { nom: "Argile gonflante", couleur: "#4A4436" },
+      { nom: "Roche mère", couleur: "#6E5A46" }
+    ],
+    ph: "6.5 – 7.5",
+    fertilite: "Élevée",
+    culturesAdaptees: ["Riz", "Coton", "Sorgho"],
+    description: "Sol lourd et fertile des vallées, se fissure fortement en saison sèche."
+  },
+  {
+    departement: "Atacora",
+    lat: 10.30,
+    lng: 1.38,
+    zone: "nord",
+    typeSol: "Sol ferrugineux tropical sur socle cristallin",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre gravillonnaire", couleur: "#8A6A45" },
+      { nom: "Roche altérée", couleur: "#6E5A46" }
+    ],
+    ph: "5.8 – 6.5",
+    fertilite: "Faible",
+    culturesAdaptees: ["Igname", "Sorgho", "Arachide"],
+    description: "Sol peu profond des zones montagneuses du nord-ouest, sensible à l'érosion."
+  },
+  {
+    departement: "Atlantique",
+    lat: 6.65,
+    lng: 2.25,
+    zone: "sud",
+    typeSol: "Sol ferrallitique",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre rouge", couleur: "#A64B2A" },
+      { nom: "Argile latéritique", couleur: "#8A5A3B" }
+    ],
+    ph: "5.0 – 6.0",
+    fertilite: "Moyenne",
+    culturesAdaptees: ["Maïs", "Manioc", "Palmier à huile"],
+    description: "Sol profond et bien drainé, typique des plateaux du sud du Bénin."
+  },
+  {
+    departement: "Borgou",
+    lat: 9.34,
+    lng: 2.63,
+    zone: "nord",
+    typeSol: "Sol ferrugineux tropical",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre ocre", couleur: "#C9A66B" },
+      { nom: "Cuirasse latéritique", couleur: "#7A5230" }
+    ],
+    ph: "6.0 – 6.8",
+    fertilite: "Moyenne",
+    culturesAdaptees: ["Sorgho", "Coton", "Igname"],
+    description: "Sol dominant du nord du Bénin, formé sous climat soudanien."
+  },
+  {
+    departement: "Collines",
+    lat: 7.68,
+    lng: 1.98,
+    zone: "centre",
+    typeSol: "Sol ferrallitique gravillonnaire",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre brune", couleur: "#8A6A45" },
+      { nom: "Gravillons latéritiques", couleur: "#7A5230" }
+    ],
+    ph: "5.5 – 6.3",
+    fertilite: "Moyenne",
+    culturesAdaptees: ["Igname", "Anacarde", "Maïs"],
+    description: "Sol des collines centrales, sur socle cristallin affleurant par endroits."
+  },
+  {
+    departement: "Couffo",
+    lat: 6.93,
+    lng: 1.68,
+    zone: "sud",
+    typeSol: "Sol ferrallitique appauvri sablo-argileux",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre brun-rouge", couleur: "#B06A3E" },
+      { nom: "Argile profonde", couleur: "#6E5A46" }
+    ],
+    ph: "5.3 – 6.0",
+    fertilite: "Faible",
+    culturesAdaptees: ["Manioc", "Arachide", "Maïs"],
+    description: "Sol fragilisé par une exploitation agricole intensive et continue."
+  },
+  {
+    departement: "Donga",
+    lat: 9.71,
+    lng: 1.67,
+    zone: "nord",
+    typeSol: "Sol ferrugineux tropical gravillonnaire",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre ocre", couleur: "#C9A66B" },
+      { nom: "Gravillons de montagne", couleur: "#7A5230" }
+    ],
+    ph: "5.8 – 6.5",
+    fertilite: "Moyenne",
+    culturesAdaptees: ["Igname", "Coton", "Sorgho"],
+    description: "Sol des reliefs de l'Atacora-Donga, moyennement fertile selon la pente."
+  },
+  {
+    departement: "Littoral",
+    lat: 6.37,
+    lng: 2.43,
+    zone: "sud",
+    typeSol: "Sol sableux côtier",
+    horizons: [
+      { nom: "Sable humifère", couleur: "#8C8368" },
+      { nom: "Sable jaune", couleur: "#C9A66B" },
+      { nom: "Nappe phréatique", couleur: "#5C7A4B" }
+    ],
+    ph: "6.0 – 7.0",
+    fertilite: "Faible",
+    culturesAdaptees: ["Cocotier", "Maraîchage", "Manioc"],
+    description: "Sol sableux de la zone littorale de Cotonou, drainant et pauvre en nutriments."
+  },
+  {
+    departement: "Mono",
+    lat: 6.64,
+    lng: 1.72,
+    zone: "sud",
+    typeSol: "Sol hydromorphe",
+    horizons: [
+      { nom: "Matière organique", couleur: "#3E3A28" },
+      { nom: "Limon gris", couleur: "#8C8368" },
+      { nom: "Argile saturée d'eau", couleur: "#5C7A4B" }
+    ],
+    ph: "5.5 – 6.5",
+    fertilite: "Élevée",
+    culturesAdaptees: ["Riz", "Canne à sucre", "Maraîchage"],
+    description: "Sol des zones basses et humides proches du fleuve Mono."
+  },
+  {
+    departement: "Ouémé",
+    lat: 6.50,
+    lng: 2.60,
+    zone: "sud",
+    typeSol: "Sol alluvial hydromorphe",
+    horizons: [
+      { nom: "Limon fertile", couleur: "#8C8368" },
+      { nom: "Argile alluviale", couleur: "#5C7A4B" },
+      { nom: "Sable profond", couleur: "#C9A66B" }
+    ],
+    ph: "5.8 – 6.8",
+    fertilite: "Élevée",
+    culturesAdaptees: ["Riz", "Maraîchage", "Maïs"],
+    description: "Sol renouvelé par les crues de la vallée de l'Ouémé, très fertile."
+  },
+  {
+    departement: "Plateau",
+    lat: 7.20,
+    lng: 2.60,
+    zone: "sud",
+    typeSol: "Terre de barre (sol ferrallitique de plateau)",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre de barre", couleur: "#A64B2A" },
+      { nom: "Argile latéritique", couleur: "#8A5A3B" }
+    ],
+    ph: "5.2 – 6.0",
+    fertilite: "Moyenne",
+    culturesAdaptees: ["Palmier à huile", "Maïs", "Manioc"],
+    description: "Sol typique des plateaux du sud-est, historiquement cultivé en continu."
+  },
+  {
+    departement: "Zou",
+    lat: 7.18,
+    lng: 1.99,
+    zone: "centre",
+    typeSol: "Sol ferrallitique appauvri",
+    horizons: [
+      { nom: "Humus", couleur: "#3E3A28" },
+      { nom: "Terre brun-rouge", couleur: "#B06A3E" },
+      { nom: "Roche altérée", couleur: "#6E5A46" }
+    ],
+    ph: "5.5 – 6.5",
+    fertilite: "Moyenne",
+    culturesAdaptees: ["Igname", "Maïs", "Coton"],
+    description: "Sol des plateaux centraux, correct en fertilité mais sensible à l'érosion."
+  }
+];
+
+/**
+ * Calendrier cultural par zone agro-climatique.
+ * Sud   : régime bimodal (2 saisons des pluies : avril-juillet et sept-nov)
+ * Centre: saison longue et progressive (avril à octobre)
+ * Nord  : saison unique et courte (mai/juin à octobre)
+ */
+const CALENDRIERS_PAR_ZONE = {
+  sud: {
+    "Janvier": ["Maraîchage", "Manioc (récolte)"],
+    "Février": ["Maraîchage", "Préparation des sols"],
+    "Mars": ["Maïs (semis)", "Manioc (plantation)"],
+    "Avril": ["Maïs (semis)", "Arachide (semis)", "Manioc"],
+    "Mai": ["Maïs (entretien)", "Maraîchage"],
+    "Juin": ["Maïs (récolte)", "Riz (semis)"],
+    "Juillet": ["Manioc", "Maraîchage", "Palmier à huile (récolte)"],
+    "Août": ["Maïs (2e semis)", "Riz (entretien)"],
+    "Septembre": ["Maïs (2e saison)", "Riz (entretien)"],
+    "Octobre": ["Riz (récolte)", "Maïs (récolte)"],
+    "Novembre": ["Manioc (récolte)", "Palmier à huile (récolte)", "Cocotier (récolte)"],
+    "Décembre": ["Maraîchage", "Manioc"]
+  },
+  centre: {
+    "Janvier": ["Anacarde (floraison)"],
+    "Février": ["Anacarde (floraison)", "Préparation des sols"],
+    "Mars": ["Igname (plantation)"],
+    "Avril": ["Maïs (semis)", "Igname"],
+    "Mai": ["Maïs (entretien)", "Igname (entretien)"],
+    "Juin": ["Maïs (récolte)", "Coton (semis)"],
+    "Juillet": ["Coton (entretien)", "Igname"],
+    "Août": ["Igname (récolte précoce)", "Anacarde (récolte)"],
+    "Septembre": ["Igname (récolte)", "Maïs (2e semis)"],
+    "Octobre": ["Coton (récolte)", "Maïs (récolte)"],
+    "Novembre": ["Igname (récolte tardive)"],
+    "Décembre": ["Anacarde (floraison)"]
+  },
+  nord: {
+    "Janvier": ["Coton (récolte tardive)"],
+    "Février": ["Préparation des sols"],
+    "Mars": ["Préparation des sols"],
+    "Avril": ["Préparation des sols"],
+    "Mai": ["Sorgho (semis)", "Arachide (semis)"],
+    "Juin": ["Coton (semis)", "Igname (plantation)", "Riz (semis)"],
+    "Juillet": ["Sorgho (entretien)", "Coton (entretien)"],
+    "Août": ["Arachide (entretien)", "Riz (entretien)"],
+    "Septembre": ["Sorgho (récolte précoce)", "Arachide (récolte)"],
+    "Octobre": ["Sorgho (récolte)", "Riz (récolte)", "Igname (récolte)"],
+    "Novembre": ["Coton (récolte)", "Igname (récolte)"],
+    "Décembre": ["Coton (récolte)"]
+  }
+};

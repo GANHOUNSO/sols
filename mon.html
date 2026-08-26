@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SolFinder — Identifier le type de sol de n'importe quelle zone</title>
+  <meta name="description" content="SolFinder identifie le type de sol d'une zone, où qu'elle soit : caractéristiques, pH, fertilité et cultures adaptées." />
+
+  <meta property="og:title" content="SolFinder — Identifier le type de sol de n'importe quelle zone" />
+  <meta property="og:description" content="Tape le nom d'un lieu ou localise-toi, et découvre son type de sol." />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='10' fill='%233E3A28'/%3E%3Crect y='10' width='32' height='8' fill='%23A64B2A'/%3E%3Crect y='18' width='32' height='7' fill='%23C9A66B'/%3E%3Crect y='25' width='32' height='7' fill='%235C7A4B'/%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet : carte interactive gratuite, sans clé API -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <a class="lien-evitement" href="#recherche">Aller directement à la recherche</a>
+
+  <!-- ============ Barre de navigation ============ -->
+  <nav class="nav">
+    <a href="#accueil" class="nav__marque">
+      <span class="nav__logo" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      SolFinder
+    </a>
+    <div class="nav__liens">
+      <a href="#comment-ca-marche">Comment ça marche</a>
+      <a href="#recherche">Rechercher</a>
+    </div>
+  </nav>
+
+  <!-- ============ Section héro ============ -->
+  <header id="accueil" class="hero">
+    <div class="hero__texte">
+      <p class="eyebrow">Pédologie appliquée</p>
+      <h1>Où que tu sois, ton sol a un profil.</h1>
+      <p class="hero__sous-titre">
+        Tape le nom d'une zone ou localise-toi : SolFinder identifie le type
+        de sol le plus probable, ses horizons, son pH, sa fertilité et les
+        cultures les mieux adaptées.
+      </p>
+      <div class="hero__actions">
+        <a href="#recherche" class="bouton bouton--principal">Identifier un sol</a>
+        <a href="#comment-ca-marche" class="bouton bouton--fantome">Comment ça marche</a>
+      </div>
+      <dl class="hero__stats">
+        <div>
+          <dt>Mondial</dt>
+          <dd>recherche par nom de lieu</dd>
+        </div>
+        <div>
+          <dt>GPS</dt>
+          <dd>détection automatique</dd>
+        </div>
+        <div>
+          <dt>12</dt>
+          <dd>départements couverts</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="hero__profil" aria-hidden="true">
+      <div class="profil-demo">
+        <div class="profil-demo__horizon" style="background:#3E3A28"></div>
+        <div class="profil-demo__horizon" style="background:#A64B2A"></div>
+        <div class="profil-demo__horizon" style="background:#C9A66B"></div>
+        <div class="profil-demo__horizon" style="background:#5C7A4B"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ Comment ça marche ============ -->
+  <section id="comment-ca-marche" class="section-etapes">
+    <p class="eyebrow eyebrow--centre">Le principe</p>
+    <h2 class="titre-section">Trois étapes, un profil de sol complet</h2>
+
+    <ol class="etapes">
+      <li class="etape">
+        <span class="etape__numero">01</span>
+        <h3>Indiquer un lieu</h3>
+        <p>Tape le nom d'une zone (ville, quartier, région…) ou laisse ton navigateur transmettre ta position.</p>
+      </li>
+      <li class="etape">
+        <span class="etape__numero">02</span>
+        <h3>Localiser précisément</h3>
+        <p>OpenStreetMap identifie le nom exact du lieu et le place sur une carte interactive.</p>
+      </li>
+      <li class="etape">
+        <span class="etape__numero">03</span>
+        <h3>Consulter le profil</h3>
+        <p>SolFinder affiche le type de sol le plus proche connu, son pH, sa fertilité et les cultures adaptées.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ Recherche ============ -->
+  <main class="conteneur" id="recherche">
+
+    <section class="panneau-recherche" aria-label="Recherche">
+      <div class="recherche-lieu">
+        <div class="champ champ--large">
+          <label for="input-zone">Nom d'une zone</label>
+          <input
+            type="text"
+            id="input-zone"
+            placeholder="Ex : Cotonou, Parakou, un quartier, un pays…"
+            autocomplete="off"
+          />
+        </div>
+        <button id="btn-recherche-zone" class="bouton bouton--principal">
+          Rechercher
+        </button>
+      </div>
+
+      <div class="separateur"><span>ou</span></div>
+
+      <button id="btn-geoloc" class="bouton bouton--secondaire bouton--pleine-largeur">
+        Utiliser ma position actuelle
+      </button>
+
+      <div class="acces-rapide">
+        <p class="acces-rapide__titre">Accès rapide (départements du Bénin déjà en base)</p>
+        <div id="chips-departements" class="chips"></div>
+      </div>
+    </section>
+
+    <p id="zone-etat" class="etat" hidden></p>
+
+    <section id="zone-resultat" class="zone-resultat" hidden aria-live="polite">
+      <!-- Rempli dynamiquement par js/app.js -->
+    </section>
+
+    <section class="section-carte" aria-label="Carte">
+      <div id="carte"></div>
+    </section>
+
+  </main>
+
+  <!-- ============ Pied de page ============ -->
+  <footer class="pied">
+    <div class="pied__contenu">
+      <div class="pied__marque">
+        <span class="nav__logo" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span>SolFinder</span>
+      </div>
+      <p class="pied__note">
+        Projet personnel de pédologie appliquée. Localisation et cartographie
+        via OpenStreetMap. Données de sols fournies à titre d'exemple, base
+        actuellement limitée au Bénin.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="js/data-sols.js"></script>
+  <script src="js/geocoding.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
